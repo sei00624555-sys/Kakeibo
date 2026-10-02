@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f7f8fc">
+<meta name="description" content="シンプルで見やすい家計簿アプリ">
+<title>Kakeibo — 家計簿</title>
+<style>
+:root{--bg:#f5f7fb;--card:#fff;--text:#18202b;--muted:#718096;--line:#e8edf3;--primary:#4f46e5;--primary2:#6366f1;--green:#059669;--red:#e11d48;--shadow:0 8px 28px rgba(20,30,55,.07);--radius:18px}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Hiragino Sans","Noto Sans JP",sans-serif}
+button,input,select,textarea{font:inherit}button{cursor:pointer;border:0}.app{max-width:1180px;margin:auto;padding:24px 18px 48px}
+header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:24px}.brand{display:flex;align-items:center;gap:12px}.logo{width:44px;height:44px;border-radius:13px;background:linear-gradient(135deg,var(--primary),#8b5cf6);display:grid;place-items:center;color:white;font-size:22px;box-shadow:0 8px 18px rgba(79,70,229,.25)}h1{font-size:21px;margin:0}.sub{font-size:12px;color:var(--muted);margin-top:2px}
+.header-actions{display:flex;gap:8px}.ghost,.primary{padding:10px 14px;border-radius:11px;font-weight:700}.ghost{background:#fff;color:#475569;border:1px solid var(--line)}.primary{background:var(--primary);color:#fff}
+.monthbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}.monthbar h2{font-size:19px;margin:0}.month-controls{display:flex;gap:6px}.month-controls button{width:36px;height:36px;border-radius:10px;background:#fff;border:1px solid var(--line);font-size:18px;color:#475569}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px}.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}.label{color:var(--muted);font-size:13px;font-weight:700}.amount{font-size:27px;font-weight:800;margin-top:8px;letter-spacing:-.03em}.income{color:var(--green)}.expense{color:var(--red)}.balance{color:var(--primary)}
+.layout{display:grid;grid-template-columns:1.45fr .8fr;gap:18px}.panel{background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}.panel-head{display:flex;justify-content:space-between;align-items:center;padding:17px 18px;border-bottom:1px solid var(--line)}.panel-head h3{margin:0;font-size:16px}.panel-body{padding:18px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:12px;font-weight:700;color:#64748b}.field input,.field select,.field textarea{width:100%;border:1px solid #dfe5ec;border-radius:10px;padding:11px 12px;background:#fbfcfe;color:var(--text);outline:none}.field input:focus,.field select:focus,.field textarea:focus{border-color:#a5b4fc;box-shadow:0 0 0 3px #eef2ff}.type-toggle{display:grid;grid-template-columns:1fr 1fr;background:#f1f3f8;padding:4px;border-radius:11px}.type-toggle button{padding:9px;border-radius:8px;background:transparent;color:#64748b;font-weight:800}.type-toggle button.active{background:#fff;color:var(--text);box-shadow:0 2px 7px rgba(0,0,0,.08)}.form-actions{display:flex;gap:8px;margin-top:14px}.form-actions button{flex:1;padding:11px;border-radius:10px;font-weight:800}.save{background:var(--primary);color:#fff}.cancel{background:#f1f3f8;color:#475569}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;padding:12px 18px;border-bottom:1px solid var(--line)}.toolbar select,.toolbar input{padding:9px 10px;border:1px solid var(--line);border-radius:9px;background:#fff;color:#475569}.toolbar input{flex:1;min-width:140px}
+.tx{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid #f0f2f5}.tx:last-child{border-bottom:0}.tx-icon{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:#f3f4f6;font-size:19px;flex:0 0 auto}.tx-main{min-width:0;flex:1}.tx-title{font-weight:750;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tx-meta{font-size:12px;color:var(--muted);margin-top:3px}.tx-amt{font-weight:850;white-space:nowrap}.tx-amt.in{color:var(--green)}.tx-amt.out{color:var(--red)}.tx-menu{display:flex;gap:3px}.tx-menu button{background:transparent;color:#94a3b8;padding:5px}.empty{text-align:center;padding:42px 18px;color:var(--muted)}.empty strong{display:block;color:#475569;margin-bottom:5px}
+.chart{height:210px;display:flex;align-items:flex-end;gap:10px;padding:18px 10px 8px}.bar-wrap{height:100%;flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:7px;min-width:0}.bar{width:min(34px,70%);border-radius:7px 7px 3px 3px;background:linear-gradient(180deg,#818cf8,#4f46e5);min-height:3px}.bar-label{font-size:10px;color:#94a3b8}.chart-note{font-size:11px;color:var(--muted);text-align:center}
+.cat-list{display:flex;flex-direction:column;gap:11px}.cat-row{display:grid;grid-template-columns:24px 1fr auto;gap:8px;align-items:center;font-size:13px}.cat-dot{width:9px;height:9px;border-radius:50%;background:#818cf8}.cat-amt{font-weight:750}.progress{height:6px;background:#eef1f5;border-radius:99px;margin-top:5px;overflow:hidden}.progress i{display:block;height:100%;background:#818cf8;border-radius:99px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);background:#1e293b;color:#fff;padding:11px 16px;border-radius:10px;font-size:13px;opacity:0;pointer-events:none;transition:.25s;z-index:10}.toast.show{opacity:1;transform:translate(-50%,0)}
+.modal{position:fixed;inset:0;background:rgba(15,23,42,.4);display:none;place-items:center;padding:18px;z-index:20}.modal.open{display:grid}.modal-card{background:#fff;border-radius:18px;max-width:440px;width:100%;padding:22px;box-shadow:0 24px 60px rgba(0,0,0,.18)}.modal-card h3{margin:0 0 8px}.modal-card p{color:#64748b;font-size:13px;line-height:1.7}.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:18px}
+@media(max-width:820px){.layout{grid-template-columns:1fr}.cards{grid-template-columns:1fr 1fr}.cards .card:last-child{grid-column:1/-1}.app{padding-top:16px}}
+@media(max-width:520px){header{align-items:flex-start}.header-actions .ghost{display:none}.cards{gap:9px}.card{padding:14px}.amount{font-size:21px}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.tx{padding:12px 14px}.tx-menu{display:none}.panel-head,.panel-body{padding-left:14px;padding-right:14px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="brand"><div class="logo">¥</div><div><h1>Kakeibo</h1><div class="sub">シンプル家計簿</div></div></div>
+  <div class="header-actions"><button class="ghost" id="exportBtn">CSV出力</button><button class="primary" id="clearBtn">データ管理</button></div>
+</header>
+
+<div class="monthbar">
+  <div><h2 id="monthTitle"></h2></div>
+  <div class="month-controls"><button id="prevMonth" aria-label="前月">‹</button><button id="todayMonth">今日</button><button id="nextMonth" aria-label="次月">›</button></div>
+</div>
+
+<section class="cards">
+ <div class="card"><div class="label">収入</div><div class="amount income" id="incomeTotal">¥0</div></div>
+ <div class="card"><div class="label">支出</div><div class="amount expense" id="expenseTotal">¥0</div></div>
+ <div class="card"><div class="label">残高</div><div class="amount balance" id="balanceTotal">¥0</div></div>
+</section>
+
+<div class="layout">
+ <main class="panel">
+  <div class="panel-head"><h3>取引履歴</h3><span class="label" id="txCount"></span></div>
+  <div class="toolbar"><select id="filterType"><option value="all">すべて</option><option value="income">収入</option><option value="expense">支出</option></select><select id="filterCat"><option value="all">全カテゴリ</option></select><input id="search" placeholder="メモを検索…"></div>
+  <div id="txList"></div>
+ </main>
+
+ <aside style="display:flex;flex-direction:column;gap:18px">
+  <section class="panel">
+   <div class="panel-head"><h3>今月の支出</h3></div>
+   <div class="panel-body"><div class="chart" id="chart"></div><div class="chart-note">日ごとの支出額</div></div>
+  </section>
+  <section class="panel">
+   <div class="panel-head"><h3>カテゴリ別</h3></div>
+   <div class="panel-body"><div class="cat-list" id="catList"></div></div>
+  </section>
+ </aside>
+
+ <section class="panel" id="formPanel" style="grid-column:1/-1">
+  <div class="panel-head"><h3 id="formTitle">取引を追加</h3></div>
+  <div class="panel-body">
+   <div class="type-toggle"><button class="active" data-type="expense">支出</button><button data-type="income">収入</button></div>
+   <form id="txForm">
+    <div class="form-grid" style="margin-top:14px">
+     <div class="field"><label>金額 *</label><input id="amount" type="number" min="1" step="1" placeholder="例：1200" required></div>
+     <div class="field"><label>日付 *</label><input id="date" type="date" required></div>
+     <div class="field"><label>カテゴリ *</label><select id="category"></select></div>
+     <div class="field"><label>メモ</label><input id="memo" maxlength="80" placeholder="例：ランチ"></div>
+    </div>
+    <div class="form-actions"><button type="button" class="cancel" id="cancelEdit" style="display:none">キャンセル</button><button class="save" id="saveBtn">追加する</button></div>
+   </form>
+  </div>
+ </section>
+</div>
+</div>
+<div class="toast" id="toast"></div>
+<div class="modal" id="modal"><div class="modal-card"><h3>データ管理</h3><p>家計簿データはこの端末のブラウザ（localStorage）に保存しています。CSVでバックアップしたり、全データを削除できます。</p><div class="modal-actions"><button class="ghost" id="closeModal">閉じる</button><button class="primary" id="deleteAll">全データ削除</button></div></div></div>
+
+<script>
+const KEY='kakeibo.transactions.v1';
+const CATS={expense:[['food','🍚','食費'],['daily','🛒','日用品'],['transport','🚃','交通費'],['housing','🏠','住居費'],['health','💊','医療'],['fun','🎮','娯楽'],['shopping','🛍️','買い物'],['other','📦','その他']],income:[['salary','💼','給与'],['bonus','🎁','賞与'],['side','✨','副収入'],['other','📦','その他']]};
+let data=JSON.parse(localStorage.getItem(KEY)||'[]'), view=new Date(), editing=null, type='expense';
+const $=id=>document.getElementById(id);
+const yen=n=>new Intl.NumberFormat('ja-JP',{style:'currency',currency:'JPY',maximumFractionDigits:0}).format(n);
+const pad=n=>String(n).padStart(2,'0');
+const ym=d=>d.getFullYear()+'-'+pad(d.getMonth()+1);
+const dateStr=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+function save(){localStorage.setItem(KEY,JSON.stringify(data))}
+function catInfo(id,t=type){return (CATS[t]||[]).find(x=>x[0]===id)||['other','📦','その他']}
+function renderCategories(){const list=CATS[type]; $('category').innerHTML=list.map(x=>'<option value="'+x[0]+'">'+x[1]+' '+x[2]+'</option>').join('');}
+function renderFilterCats(){const all=[...new Map([...CATS.expense,...CATS.income].map(x=>[x[0],x])).values()]; $('filterCat').innerHTML='<option value="all">全カテゴリ</option>'+all.map(x=>'<option value="'+x[0]+'">'+x[1]+' '+x[2]+'</option>').join('')}
+function monthData(){const key=ym(view);return data.filter(x=>x.date.startsWith(key))}
+function render(){
+ const list=monthData(), income=list.filter(x=>x.type==='income').reduce((a,x)=>a+x.amount,0), expense=list.filter(x=>x.type==='expense').reduce((a,x)=>a+x.amount,0);
+ $('monthTitle').textContent=view.getFullYear()+'年'+(view.getMonth()+1)+'月';
+ $('incomeTotal').textContent=yen(income);$('expenseTotal').textContent=yen(expense);$('balanceTotal').textContent=yen(income-expense);
+ const ft=$('filterType').value, fc=$('filterCat').value, q=$('search').value.trim().toLowerCase();
+ const shown=list.filter(x=>(ft==='all'||x.type===ft)&&(fc==='all'||x.category===fc)&&(!q||(x.memo||'').toLowerCase().includes(q))).sort((a,b)=>b.date.localeCompare(a.date)||b.created-b.created);
+ $('txCount').textContent=shown.length+'件';
+ $('txList').innerHTML=shown.length?shown.map(x=>{const c=catInfo(x.category,x.type);return '<div class="tx"><div class="tx-icon">'+c[1]+'</div><div class="tx-main"><div class="tx-title">'+esc(x.memo||c[2])+'</div><div class="tx-meta">'+x.date.replaceAll('-','/ ')+' · '+c[2]+'</div></div><div class="tx-amt '+(x.type==='income'?'in':'out')+'">'+(x.type==='income'?'+':'−')+yen(x.amount)+'</div><div class="tx-menu"><button onclick="editTx(\''+x.id+'\')">✎</button><button onclick="removeTx(\''+x.id+'\')">×</button></div></div>'}).join(''):'<div class="empty"><strong>この月の取引はありません</strong>下のフォームから追加できます。</div>';
+ renderChart(list);renderCats(list);
+}
+function renderChart(list){const days=new Date(view.getFullYear(),view.getMonth()+1,0).getDate();const vals=[];for(let d=1;d<=days;d++){const s=pad(d);vals.push(list.filter(x=>x.type==='expense'&&x.date.endsWith('-'+s)).reduce((a,x)=>a+x.amount,0))}const max=Math.max(...vals,1);$('chart').innerHTML=vals.map((v,i)=>'<div class="bar-wrap"><div class="bar" title="'+yen(v)+'" style="height:'+Math.max(3,v/max*155)+'px"></div><div class="bar-label">'+(i%5===0||i===days-1?(i+1):'')+'</div></div>').join('')}
+function renderCats(list){const rows={};list.filter(x=>x.type==='expense').forEach(x=>rows[x.category]=(rows[x.category]||0)+x.amount);const sorted=Object.entries(rows).sort((a,b)=>b[1]-a[1]);const max=sorted[0]?.[1]||1;$('catList').innerHTML=sorted.length?sorted.map(([id,v])=>{const c=catInfo(id,'expense');return '<div class="cat-row"><span>'+c[1]+'</span><div><div>'+c[2]+'</div><div class="progress"><i style="width:'+(v/max*100)+'%"></i></div></div><span class="cat-amt">'+yen(v)+'</span></div>'}).join(''):'<div class="empty" style="padding:10px">まだ支出がありません</div>'}
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function toast(s){const e=$('toast');e.textContent=s;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),1800)}
+function resetForm(){editing=null;$('formTitle').textContent='取引を追加';$('saveBtn').textContent='追加する';$('cancelEdit').style.display='none';$('amount').value='';$('memo').value='';$('date').value=dateStr(new Date());type='expense';document.querySelectorAll('.type-toggle button').forEach(b=>b.classList.toggle('active',b.dataset.type===type));renderCategories()}
+window.editTx=id=>{const x=data.find(a=>a.id===id);if(!x)return;editing=id;type=x.type;document.querySelectorAll('.type-toggle button').forEach(b=>b.classList.toggle('active',b.dataset.type===type));renderCategories();$('amount').value=x.amount;$('date').value=x.date;$('category').value=x.category;$('memo').value=x.memo||'';$('formTitle').textContent='取引を編集';$('saveBtn').textContent='更新する';$('cancelEdit').style.display='block';$('formPanel').scrollIntoView({behavior:'smooth',block:'center'})};
+window.removeTx=id=>{if(!confirm('この取引を削除しますか？'))return;data=data.filter(x=>x.id!==id);save();render();toast('削除しました')};
+document.querySelectorAll('.type-toggle button').forEach(b=>b.onclick=()=>{type=b.dataset.type;document.querySelectorAll('.type-toggle button').forEach(x=>x.classList.toggle('active',x===b));renderCategories()});
+$('txForm').onsubmit=e=>{e.preventDefault();const x={id:editing||crypto.randomUUID(),type,amount:Number($('amount').value),date:$('date').value,category:$('category').value,memo:$('memo').value.trim(),created:Date.now()};if(editing)data=data.map(a=>a.id===editing?{...a,...x}:a);else data.push(x);save();view=new Date(x.date+'T12:00:00');resetForm();render();toast(editing?'更新しました':'追加しました')};
+$('cancelEdit').onclick=resetForm;
+$('prevMonth').onclick=()=>{view=new Date(view.getFullYear(),view.getMonth()-1,1);render()};$('nextMonth').onclick=()=>{view=new Date(view.getFullYear(),view.getMonth()+1,1);render()};$('todayMonth').onclick=()=>{view=new Date();render()};
+$('filterType').onchange=render;$('filterCat').onchange=render;$('search').oninput=render;
+$('clearBtn').onclick=()=>$('modal').classList.add('open');$('closeModal').onclick=()=>$('modal').classList.remove('open');
+$('deleteAll').onclick=()=>{if(confirm('すべての家計簿データを削除します。この操作は元に戻せません。')){data=[];save();$('modal').classList.remove('open');render();toast('全データを削除しました')}};
+$('exportBtn').onclick=()=>{if(!data.length){toast('出力するデータがありません');return}const head='日付,種類,カテゴリ,金額,メモ\n';const body=data.sort((a,b)=>a.date.localeCompare(b.date)).map(x=>{const c=catInfo(x.category,x.type);return [x.date,x.type==='income'?'収入':'支出',c[2],x.amount,x.memo||''].map(v=>'"'+String(v).replaceAll('"','""')+'"').join(',')}).join('\n');const blob=new Blob(['\uFEFF'+head+body],{type:'text/csv;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='kakeibo-'+dateStr(new Date())+'.csv';a.click();URL.revokeObjectURL(a.href)};
+$('date').value=dateStr(new Date());renderCategories();renderFilterCats();render();
+</script>
+</body>
+</html>
